@@ -6,7 +6,6 @@ import java.util.UUID;
 
 public class UserCouponDuplicatedException extends BusinessException {
 
-
     public UserCouponDuplicatedException(
         Long userId,
         UUID couponId

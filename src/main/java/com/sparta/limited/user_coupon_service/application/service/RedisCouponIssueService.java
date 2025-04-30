@@ -22,13 +22,23 @@ public class RedisCouponIssueService {
     private final DefaultRedisScript<String> stockAndDupScript;
     private final StringRedisTemplate redisTemplate;
 
-    public void quantityAndDuplicate(UUID couponId, Long userId) {
+    public void createIssueCoupon(UUID couponId, Long userId) {
         String quantityKey = String.format(KEY_QUANTITY, couponId);
         String duplicateKey = String.format(KEY_DUPLICATE, couponId);
+        String payloadUserCoupon = couponId.toString() + "|" + userId;
+        String payloadQuantity = couponId.toString();
+
         String result = redisTemplate.execute(
             stockAndDupScript,
-            List.of(quantityKey, duplicateKey),
-            userId.toString()
+            List.of(
+                quantityKey,
+                duplicateKey,
+                QUEUE_KEY_USERS,
+                QUEUE_KEY_QUANTITY
+            ),
+            userId.toString(),
+            payloadUserCoupon,
+            payloadQuantity
         );
 
         if (result.equals(OUT_OF_STOCK)) {
@@ -37,20 +47,6 @@ public class RedisCouponIssueService {
         if (result.equals(DUPLICATED)) {
             throw new UserCouponDuplicatedException(userId, couponId);
         }
-    }
-
-    public void userCouponCreateEvent(
-        UUID couponId,
-        Long userId
-    ) {
-        String payload = couponId + "|" + userId;
-        redisTemplate.opsForList().rightPush(QUEUE_KEY_USERS, payload);
-    }
-
-    public void decreaseCouponQuantityEvent(
-        UUID couponId
-    ) {
-        redisTemplate.opsForList().rightPush(QUEUE_KEY_QUANTITY, couponId.toString());
     }
 
 }

@@ -13,7 +13,7 @@ public class RedisLuaConfig {
     public DefaultRedisScript<String> stockAndDuplicateScript() {
         DefaultRedisScript<String> script = new DefaultRedisScript<>();
         script.setScriptSource(new ResourceScriptSource(
-            new ClassPathResource(RedisScriptKey.QUANTITY_AND_DUPLICATE.getLuaScripName())
+            new ClassPathResource(RedisScriptKey.CREATE_ISSUE_COUPON.getLuaScripName())
         ));
         script.setResultType(String.class);
         return script;

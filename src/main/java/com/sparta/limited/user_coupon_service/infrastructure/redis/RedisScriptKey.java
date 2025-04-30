@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public enum RedisScriptKey {
-    QUANTITY_AND_DUPLICATE("lua/quantity-duplicate.lua"),
+    CREATE_ISSUE_COUPON("lua/createIssueCoupon.lua"),
     ;
 
     private final String luaScripName;

@@ -10,7 +10,7 @@ public class UserCouponService {
 
     private final RedisCouponIssueService redisCouponIssueService;
 
-    public void creatUserCoupon(
+    public void createUserCoupon(
         UUID couponId,
         Long userId
     ) {

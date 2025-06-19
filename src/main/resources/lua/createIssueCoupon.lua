@@ -3,8 +3,7 @@
 -- KEYS[3]=user-coupon:queue
 -- KEYS[4]=coupon-quantity-decrease:queue
 -- ARGV[1]=userId
--- ARGV[2]=couponId|userId
--- ARGV[3]=couponId
+-- ARGV[2]=couponId
 
 local remain = redis.call("DECR", KEYS[1])
 if not remain or remain < 0 then
@@ -17,6 +16,10 @@ if redis.call("SADD", KEYS[2], ARGV[1]) == 0 then
   return "DUPLICATED"
 end
 
-redis.call("RPUSH", KEYS[3], ARGV[2])
-redis.call("RPUSH", KEYS[4], ARGV[3])
+redis.call("XADD", KEYS[3], "*",
+"userId", ARGV[1],
+"couponId", ARGV[2]
+)
+
+redis.call("RPUSH", KEYS[4], ARGV[2])
 return {ok=tostring(remain)}

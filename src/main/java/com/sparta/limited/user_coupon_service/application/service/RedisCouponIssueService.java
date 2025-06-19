@@ -17,7 +17,7 @@ public class RedisCouponIssueService {
     private static final String DUPLICATED = "DUPLICATED";
     private static final String KEY_QUANTITY = "coupon:%s:quantity";
     private static final String KEY_DUPLICATE = "coupon:%s:users";
-    private static final String QUEUE_KEY_USERS = "user-coupon:queue";
+    private static final String EVENT_KEY_USERS = "user-coupon:queue";
     private static final String QUEUE_KEY_QUANTITY = "coupon-quantity-decrease:queue";
     private final DefaultRedisScript<String> stockAndDupScript;
     private final StringRedisTemplate redisTemplate;
@@ -25,20 +25,17 @@ public class RedisCouponIssueService {
     public void createIssueCoupon(UUID couponId, Long userId) {
         String quantityKey = String.format(KEY_QUANTITY, couponId);
         String duplicateKey = String.format(KEY_DUPLICATE, couponId);
-        String payloadUserCoupon = couponId.toString() + "|" + userId;
-        String payloadQuantity = couponId.toString();
 
         String result = redisTemplate.execute(
             stockAndDupScript,
             List.of(
                 quantityKey,
                 duplicateKey,
-                QUEUE_KEY_USERS,
+                EVENT_KEY_USERS,
                 QUEUE_KEY_QUANTITY
             ),
             userId.toString(),
-            payloadUserCoupon,
-            payloadQuantity
+            couponId.toString()
         );
 
         if (result.equals(OUT_OF_STOCK)) {

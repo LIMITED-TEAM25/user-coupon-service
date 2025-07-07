@@ -7,12 +7,12 @@ public enum RedisScriptKey {
     CREATE_ISSUE_COUPON("lua/createIssueCoupon.lua"),
     ;
 
-    private final String luaScripName;
+    private final String luaScriptName;
 
     RedisScriptKey(
         String luaScripName
     ) {
-        this.luaScripName = luaScripName;
+        this.luaScriptName = luaScripName;
     }
 
 }

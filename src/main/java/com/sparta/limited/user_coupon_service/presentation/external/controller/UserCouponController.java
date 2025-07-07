@@ -24,7 +24,7 @@ public class UserCouponController {
         @CurrentUserId Long userId,
         @PathVariable(name = "couponId") UUID couponId
     ) {
-        userCouponService.creatUserCoupon(couponId, userId);
+        userCouponService.createUserCoupon(couponId, userId);
         URI uri = ServletUriComponentsBuilder.fromCurrentContextPath()
             .path("/api/v1/user-coupons/{userCouponId}")
             .buildAndExpand(couponId)
